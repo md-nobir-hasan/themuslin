@@ -1,0 +1,14 @@
+{
+    "name": "PluginManage",
+    "alias": "pluginmanage",
+    "version" : "1.0.0",
+    "description": "This plugin build to manage all the plugin of this script",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\PluginManage\\Providers\\PluginManageServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

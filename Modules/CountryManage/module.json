@@ -1,0 +1,13 @@
+{
+    "name": "CountryManage",
+    "alias": "countrymanage",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CountryManage\\Providers\\CountryManageServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

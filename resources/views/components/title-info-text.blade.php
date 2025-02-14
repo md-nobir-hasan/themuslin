@@ -1,0 +1,1 @@
+<div class="info-text">{{__('user {color} color text {/color} to make text colorful')}}</div>

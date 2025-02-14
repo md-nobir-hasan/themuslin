@@ -1,0 +1,369 @@
+@import "global";
+@import "var";
+@import "fonts";
+
+// home banner slider
+.banner-slider {
+  position: relative;
+
+  section.banner-slider.slick-initialized.slick-slider {
+    position: relative;
+  }
+
+  .swiper-slide {
+    overflow: hidden;
+    position: relative;
+    padding-top: calc(550 / 1366 * 100%);
+
+    img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    h1 {
+      position: absolute;
+      content: "";
+      bottom: 80px;
+      z-index: 1;
+      color: #fff;
+      font-size: 60px;
+      font-weight: 700;
+      overflow-y: hidden;
+      // height: 0px;
+      transition: height 0.3s;
+    }
+  }
+
+  .arrows ul {
+    position: absolute;
+    content: "";
+    z-index: 2;
+    width: 100%;
+    justify-content: space-between;
+    display: flex;
+    padding-left: 40px;
+    padding-right: 40px;
+    height: 100%;
+    align-items: center;
+    li {
+      border: 1px solid white;
+      height: 40px;
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  }
+}
+
+// facilities slider
+.facilities-area {
+  padding-top: 30px;
+  .swiper-slide {
+    text-align: center;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .content {
+    display: flex;
+    gap: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 37px 0px;
+
+    &:last-of-type(1) {
+      margin-right: unset;
+    }
+    .right {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+      h6 {
+        color: #000;
+        font-family: Futura Std;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+      }
+      p {
+        font-size: 14px;
+        font-weight: 400;
+      }
+    }
+  }
+}
+
+// best selling slider
+.best-area {
+  padding-top: 60px;
+  padding-bottom: 70px;
+
+  .swiper-slide {
+    background-color: #fff;
+    border-radius: 10px;
+  }
+}
+.best-offer__single__btn {
+  position: absolute !important;
+  content: "";
+  left: 0;
+  right: 0;
+  display: flex !important;
+  justify-content: center !important;
+  bottom: 30px !important;
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+}
+// big features
+.big-feature {
+  padding-bottom: 60px;
+  .feature-card__img {
+    position: relative;
+    padding-top: calc(700 / 1170 * 100%);
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transition: 1.4s ease;
+    }
+  }
+}
+// feature list area start
+.feature-list {
+  background-color: #fff;
+  padding-top: 60px;
+  padding-bottom: 30px;
+  &__item {
+    position: relative;
+    margin-bottom: 30px;
+    &__wrap {
+      overflow: hidden;
+      border-radius: 10px;
+      position: relative;
+      padding-top: calc(400 / 570 * 100%);
+      &__img {
+        img {
+          transition: 1.4s ease;
+        }
+      }
+    }
+    &__btn {
+      position: absolute;
+      content: "";
+      bottom: 30px;
+      left: 0;
+      right: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+// feature list area end
+// best selling slider
+.best-offer {
+  padding-top: 60px;
+  padding-bottom: 60px;
+  &__single {
+    position: relative;
+    padding-top: calc(450 / 1170 * 100%);
+    border-radius: 10px;
+    overflow: hidden;
+    &__img {
+      img {
+        transition: 1.4s ease;
+      }
+    }
+  }
+  .swiper-slide {
+    background-color: #fff;
+    border-radius: 10px;
+  }
+}
+
+// Responsive
+/* Normal desktop :1200px. */
+@media (min-width: 1200px) and (max-width: 1500px) {
+}
+
+/* Normal desktop :992px. */
+@media (min-width: 992px) and (max-width: 1200px) {
+}
+
+/* Tablet desktop :768px. */
+@media (min-width: 768px) and (max-width: 991px) {
+  // mobile menu items
+  .card-header button {
+    padding: 0;
+  }
+  //.swiper-slide {
+  //  padding-top: calc(330 / 375 * 100%);
+  //}
+  .right {
+    text-align: left;
+  }
+
+  // slider
+  .slick-prev.slick-arrow {
+    left: 15px;
+  }
+  .slick-next.slick-arrow {
+    right: 15px;
+  }
+}
+
+/* small mobile :320px. */
+@media (max-width: 767px) {
+  // mobile menu
+  .mobile-menu {
+    display: block !important;
+  }
+  .hamburger {
+    width: 20%;
+    z-index: 999;
+  }
+  .mobile-search {
+    width: 80%;
+  }
+  .mobile-menu-inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .right {
+    text-align: left;
+  }
+
+  // banner slider
+  .banner-slider {
+    // height: 330px;
+    .swiper-slide {
+      padding-top: calc(330 / 375 * 100%);
+    }
+    .swiper-slide h1 {
+      bottom: 40px;
+      font-size: 40px;
+    }
+    .swiper-slide {
+      height: 330px;
+    }
+    .arrows ul {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+
+  // facilities area
+  .facilities-area {
+    padding-top: 15px;
+    .container {
+      padding-right: unset;
+    }
+    .swiper.facilities.swiper-initialized {
+      padding-right: 15px;
+    }
+
+    .content {
+      width: 100%;
+      padding: 20px 15px;
+      gap: 15px;
+      flex-direction: column;
+      text-align: left;
+      border-radius: unset;
+      height: 140px;
+    }
+  }
+
+  // best area
+  .best-area {
+    padding-top: 50px;
+    padding-bottom: 40px;
+    .subtitle {
+      h2 {
+        font-size: 20px;
+      }
+    }
+    .single-item {
+      &__content {
+        padding: 20px 10px 20px 10px;
+        p {
+          padding-right: unset;
+        }
+      }
+    }
+  }
+
+  .big-feature {
+    padding-bottom: 20px;
+    .subtitle {
+      padding-bottom: 20px;
+    }
+  }
+  .subtitle {
+    padding-bottom: 20px;
+  }
+
+  .big-feature .feature-card__img {
+    position: relative;
+    padding-top: calc(400 / 345 * 100%);
+  }
+
+  .feature-list {
+    padding-top: 20px;
+    padding-bottom: 5px;
+    &__item {
+      margin-bottom: 15px;
+      &__wrap {
+        padding-top: calc(240 / 345 * 100%);
+      }
+      &__btn {
+        bottom: 20px;
+      }
+    }
+  }
+
+  .best-offer {
+    padding-top: 46px;
+    padding-bottom: 40px;
+    .subtitle {
+      h2 {
+        font-weight: 700;
+        font-size: 24px;
+      }
+    }
+    &__single {
+      padding-top: calc(250 / 345 * 100%);
+      &__btn {
+        bottom: 20px;
+      }
+    }
+  }
+}
