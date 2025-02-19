@@ -49,10 +49,7 @@ class DHLShippingController extends Controller
 
         $all_user_shipping = [];
 
-        $all_country = Country::where('status', 'publish')
-            ->where('id', 1)
-            ->get()->toArray();
-        $all_country = array_column($all_country, 'name', 'id');
+        $all_country = Country::where('status', 'publish')->where('id', $request->country)->get()->toArray();
 
         $all_cart_items = Cart::content();
 
@@ -75,7 +72,7 @@ class DHLShippingController extends Controller
 
         // Now send the request
         $apiKey = config('services.dhl.key');
-        $apiPassword = "D#1kE$1xV$6yQ!2i";
+        $apiPassword = config('services.dhl.password');
         $auth = base64_encode("$apiKey:$apiPassword");
         $url =  config('services.dhl.url');
         $messageReference = substr(md5(uniqid()), 0, 28);

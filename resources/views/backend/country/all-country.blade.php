@@ -26,6 +26,7 @@
                                     <x-bulk-action.th />
                                     <th>{{ __('ID') }}</th>
                                     <th>{{ __('Name') }}</th>
+                                    <th>{{ __('Code') }}</th>
                                     <th>{{ __('Status') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </thead>
@@ -35,6 +36,7 @@
                                             <x-bulk-action.td :id="$country->id" />
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $country->name }}</td>
+                                            <td>{{ $country->code }}</td>
                                             <td><x-status-span :status="$country->status" /></td>
                                             <td>
                                                 @can('country-delete')
@@ -43,7 +45,7 @@
                                                 @can('country-edit')
                                                     <a href="#1" data-bs-toggle="modal" data-bs-target="#country_edit_modal"
                                                         class="btn btn-primary btn-xs mb-2 me-1 country_edit_btn"
-                                                        data-id="{{ $country->id }}" data-name="{{ $country->name }}"
+                                                        data-id="{{ $country->id }}" data-name="{{ $country->name }}" data-code="{{ $country->code }}"
                                                         data-status="{{ $country->status }}">
                                                         <i class="ti-pencil"></i>
                                                     </a>
@@ -70,6 +72,11 @@
                                     <label for="name">{{ __('Name') }}</label>
                                     <input type="text" class="form-control" id="name" name="name"
                                         placeholder="{{ __('Name') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">{{ __('Code') }}</label>
+                                    <input type="text" class="form-control" id="code" name="code"
+                                        placeholder="{{ __('Code') }}">
                                 </div>
                                 <div class="form-group">
                                     <label for="status">{{ __('Status') }}</label>
@@ -104,6 +111,11 @@
                                     placeholder="{{ __('Name') }}">
                             </div>
                             <div class="form-group">
+                                <label for="edit_code">{{ __('Code') }}</label>
+                                <input type="text" class="form-control" id="edit_code" name="code"
+                                    placeholder="{{ __('Code') }}">
+                            </div>
+                            <div class="form-group">
                                 <label for="edit_status">{{ __('Status') }}</label>
                                 <select name="status" class="form-control" id="edit_status">
                                     <option value="publish">{{ __('Publish') }}</option>
@@ -133,12 +145,14 @@
                 let el = $(this);
                 let id = el.data('id');
                 let name = el.data('name');
+                let code = el.data('code');
                 let status = el.data('status');
                 let modal = $('#country_edit_modal');
 
                 modal.find('#country_id').val(id);
                 modal.find('#edit_status option[value="' + status + '"]').attr('selected', true);
                 modal.find('#edit_name').val(name);
+                modal.find('#edit_cdoe').val(code);
             });
         });
     </script>

@@ -28,6 +28,7 @@ class Order extends Model
         "type",
         "note",
         "selected_customer",
+        "shipmenttrackingnumber",
         "shipping_id"
     ];
 

@@ -51,6 +51,7 @@ return [
         'key' => env('DHL_API_KEY'),
         'password' => env('DHL_API_PASSWORD'),
         'url' => env('DHL_API_URL_RATES'),
+        'urlshipment' => env('DHL_API_URL_SHIPING'),
     ],
 
 ];

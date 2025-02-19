@@ -27,6 +27,7 @@ use Modules\Order\Services\OrderService;
 use Modules\Order\Services\OrderShippingChargeService;
 use Modules\Order\Services\OrderTaxService;
 use Modules\Order\Services\PaymentGatewayService;
+use Modules\Order\Services\DhlshipmentService;
 use Modules\TaxModule\Entities\TaxClassOption;
 use Modules\TaxModule\Services\CalculateTaxBasedOnCustomerAddress;
 use Modules\User\Entities\User;
@@ -55,7 +56,7 @@ class DcastaliaOrderController extends Controller
     public function checkout(SubmitCheckoutRequest $request)
     {
         $data = $request->validated();
-        dd($data);
+      
         return self::placeOrder($data);
     }
 
@@ -67,7 +68,7 @@ class DcastaliaOrderController extends Controller
     public static function placeOrder($request, $type = null)
     {
         $order_process = self::orderProcess($request, $type);
-
+        
         if (!$order_process['success']) {
 
             $msg = 'Product(s) removed due to being out of stock.';
@@ -75,12 +76,16 @@ class DcastaliaOrderController extends Controller
             return redirect(route($order_process['route'] == 'checkout' ? 'frontend.cart-checkout' : 'homepage'))->with('error', $msg);
         }
 
+        
+        
+        
         if ($request["payment_gateway"] == 'cash_on_delivery') {
 
             self::sendOrderMail(order_process: $order_process, request: $request);
-
+            
             Cart::instance(self::cartInstanceName())->destroy();
-
+             $orderId = $order_process["order_id"];
+             DhlshipmentService::cratedhlshipment($orderId));
             session()->flash('success', 'Your order has been placed successfully');
 
             return redirect(route('my-profile') . '#orders');
@@ -117,7 +122,7 @@ class DcastaliaOrderController extends Controller
             self::onlinePaymentInitiate($orderData);
 
             self::sendOrderMail(order_process: $order_process, request: $request);
-
+             DhlshipmentService::cratedhlshipment($orderId));
             return redirect(route('my-profile') . '#orders');
 
         }

@@ -1133,7 +1133,14 @@ class FrontendController extends Controller
 
 
     public function cartCheckoutPage(Request $request): View|Factory|RedirectResponse|Application
+        
+//    public function cartCheckoutPage(Request $request)
+        
+    {
     
+
+
+        
         $cart = Cart::instance('default')->content();
 
         $default_shipping_cost = CartAction::getDefaultShippingCost();

@@ -41,11 +41,13 @@ class CountryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:191',
+            'code' => 'required|string|max:191',
             'status' => 'required|string|max:191',
         ]);
 
         $country = Country::create([
             'name' => $request->sanitize_html('name'),
+            'code' => $request->sanitize_html('code'),
             'status' => $request->sanitize_html('status'),
         ]);
 
@@ -64,11 +66,13 @@ class CountryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:191',
+            'code' => 'required|string|max:191',
             'status' => 'required|string|max:191',
         ]);
 
         $updated = Country::findOrFail($request->id)->update([
             'name' => $request->sanitize_html('name'),
+            'code' => $request->sanitize_html('code'),
             'status' => $request->sanitize_html('status'),
         ]);
 
