@@ -55,7 +55,7 @@ class DcastaliaOrderController extends Controller
     public function checkout(SubmitCheckoutRequest $request)
     {
         $data = $request->validated();
-
+        dd($data);
         return self::placeOrder($data);
     }
 

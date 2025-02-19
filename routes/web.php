@@ -924,6 +924,7 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_
 Route::post('/set-currency', 'FrontendController@setCurrency')->name('set.currency');
 
 Route::post('/dhl/calculate', [DHLShippingController::class, 'calculate'])->name('dhl.calculate');
+Route::post('/dhl/calu', [DHLShippingController::class, 'calu'])->name('dhl.calu');
 
 Route::get('/get-cities', [DHLShippingController::class, 'getCities'])->name('get.cities');
 

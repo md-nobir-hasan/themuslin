@@ -431,27 +431,33 @@
                                             />
                                             <a data-action="{{route('dc.apply-coupon')}}" id="apply_now_coupon" href="#">Apply</a>
                                         </div>
-
-                                        @if($currency == 'USD')
+                                       
                                             <div id="shipping_method" class="cart-default__bottom__check">
                                                 <h6> <div id="shipping_method" class="cart-default__bottom__check">
                                                     <h6>Shipping Method</h6>
                                                 </div>
                                                 <div class="dhl-shipping-section mb-3">
+
                                                     <div class="form-check">
                                                         <input type="checkbox" id="dhlCheckbox" name="dhlCheckbox" class="form-check-input">
                                                         <label for="dhlCheckbox" class="form-check-label">DHL Express Shipping</label>
-                                                    </div>
-                                                    
-                                                    <div id="dhlCalculation" style="display: none;" class="mt-2">
-                                                        <div class="dhl-price mt-2">
-                                                            Shipping Cost: <span id="dhlShippingCost">Calculating...</span>
-                                                        </div>
+                                                    </div><br>
+                                                    <div class="form-check">
+                                                        <input type="radio" id="dhlCheckbox0" name="dhlCheckbox" class="form-check-input dhlCheckbox" data-id="0">
+                                                        <label for="dhlCheckbox0" class="form-check-label">DHL EXPRESS 9:00 Shipping</label> - <span id="dhlShippingCost0"></span>
+                                                    </div><br>
+                                                    <div class="form-check">
+                                                        <input type="radio" id="dhlCheckbox1" name="dhlCheckbox" class="form-check-input dhlCheckbox"  data-id="1">
+                                                        <label for="dhlCheckbox1" class="form-check-label">DHL EXPRESS 12:00 Shipping</label> - <span id="dhlShippingCost1"></span>
+                                                    </div> <br>
+                                                    <div class="form-check">
+                                                        <input type="radio" id="dhlCheckbox2" name="dhlCheckbox" class="form-check-input dhlCheckbox"  data-id="2">
+                                                        <label for="dhlCheckbox2" class="form-check-label">DHL EXPRESS WORLDWIDE Shipping</label> - <span id="dhlShippingCost2"></span>
                                                     </div>
                                                 </div>
                                             </h6>
                                             </div>
-                                        @endif
+                                      
                                         <!-- selected form  -->
                                         <h6 class="font-weight-bold mb-20">Select Payment Method</h6>
                                         <div class="content-area__left__top__check checkboxPayment"
@@ -685,12 +691,26 @@
         $(document).ready(function() {
             // DHL Shipping Calculation
             $('#dhlCheckbox').on('change', function() {
-                $('#dhlCalculation').toggle($(this).is(':checked'));
                 if ($(this).is(':checked')) {
                     calculateDHLShipping();
                 } else {
-                    $('#dhlShippingCost').text('-');
+                    $('#dhlShippingCost0').text('');
+                    $('#dhlShippingCost1').text('');
+                    $('#dhlShippingCost2').text('');
                     // Reset shipping cost in total calculation
+                    $("#shipping_fee").text('0');
+                    calculateOrderSummary();
+                }
+            });
+            
+            $('.dhlCheckbox').on('change', function() {
+                if ($(this).is(':checked')) {
+                    let state = $('.state').val();
+                    let id = $(this).attr("data-id");
+                    var shippingCost = $("#dhlShippingCost"+id).text();
+                    $("#shipping_fee").text(shippingCost);
+                    calculateOrderSummary();
+                } else {
                     $("#shipping_fee").text('0');
                     calculateOrderSummary();
                 }
@@ -698,7 +718,7 @@
 
             // Calculate shipping when address fields change
             $('#address, #city, #zipcode, .country, .state').on('change', function() {
-                if ($('#dhlCheckbox').is(':checked')) {
+                if ($('.dhlCheckbox').is(':checked')) {
                     calculateDHLShipping();
                 }
             });
@@ -709,16 +729,19 @@
                 let zipCode = $('#zipcode').val();
                 let country = $('.country').val();
                 let state = $('.state').val();
-                
                 if (!address || !city || !zipCode || !country) {
-                    $('#dhlShippingCost').text('Please fill all address fields');
+                    $('#dhlShippingCost0').text('Please fill all address fields');
+                    $('#dhlShippingCost1').text('Please fill all address fields');
+                    $('#dhlShippingCost2').text('Please fill all address fields');
                     return;
                 }
 
-                $('#dhlShippingCost').text('Calculating...');
+                $('#dhlShippingCost0').text('Calculating...');
+                $('#dhlShippingCost1').text('Calculating...');
+                $('#dhlShippingCost2').text('Calculating...');
 
                 $.ajax({
-                    url: '{{ route("dhl.calculate") }}',
+                    url: '{{ route("dhl.calu") }}',
                     type: 'POST',
                     data: {
                         address: address,
@@ -730,17 +753,17 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            $('#dhlShippingCost').text(response.cost);
-                            // Update shipping cost in order summary
-                            $("#shipping_fee").text(response.cost);
-                            calculateOrderSummary();
+                            $('#dhlShippingCost0').text(response.cost0);
+                            $('#dhlShippingCost1').text(response.cost1);
+                            $('#dhlShippingCost2').text(response.cost2);
+                            
                         } else {
-                            $('#dhlShippingCost').text('Calculation failed');
+                            $('#dhlShippingCost0').text('Calculation failed');
                             toastr.error(response.message || 'Failed to calculate shipping cost');
                         }
                     },
                     error: function(xhr) {
-                        $('#dhlShippingCost').text('Calculation failed');
+                        $('#dhlShippingCost0').text('Calculation failed');
                         toastr.error('Failed to calculate shipping cost');
                     }
                 });
