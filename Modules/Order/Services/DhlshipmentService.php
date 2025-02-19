@@ -186,7 +186,6 @@ class DhlshipmentService extends OrderAbstract
         ]);
             
         $responseArray = $response->json();
-        dd($responseArray);
          try {
                  Order::where("id",$orderId)->update([
                     "shipmenttrackingnumber" => $responseArray['shipmentTrackingNumber'],
