@@ -28,6 +28,7 @@ use Modules\Order\Services\OrderShippingChargeService;
 use Modules\Order\Services\OrderTaxService;
 use Modules\Order\Services\PaymentGatewayService;
 use Modules\TaxModule\Entities\TaxClassOption;
+use Modules\Order\Services\DhlshipmentService;
 use Modules\TaxModule\Services\CalculateTaxBasedOnCustomerAddress;
 use Modules\User\Entities\User;
 use Modules\Wallet\Http\Services\WalletService;
@@ -55,7 +56,7 @@ class DcastaliaOrderController extends Controller
     public function checkout(SubmitCheckoutRequest $request)
     {
         $data = $request->validated();
-
+        
         return self::placeOrder($data);
     }
 
@@ -80,7 +81,8 @@ class DcastaliaOrderController extends Controller
             self::sendOrderMail(order_process: $order_process, request: $request);
 
             Cart::instance(self::cartInstanceName())->destroy();
-
+            $orderId = $order_process["order_id"];
+            DhlshipmentService::cratedhlshipment($orderId);
             session()->flash('success', 'Your order has been placed successfully');
 
             return redirect(route('my-profile') . '#orders');
@@ -117,7 +119,7 @@ class DcastaliaOrderController extends Controller
             self::onlinePaymentInitiate($orderData);
 
             self::sendOrderMail(order_process: $order_process, request: $request);
-
+            DhlshipmentService::cratedhlshipment($orderId);
             return redirect(route('my-profile') . '#orders');
 
         }
@@ -189,19 +191,24 @@ class DcastaliaOrderController extends Controller
 
         // if request comes from pos then go forward with totalShippingCharge 0 if request is not coming from pos then store shipping address and totalShippingCharge from database
         if ($type != 'pos') {
-            $shippingTaxClass = TaxClassOption::where("class_id", get_static_option("shipping_tax_class"))->sum("rate");
-            $shippingCost = OrderShippingChargeService::getShippingCharge($request["shipping_cost"]);
-            $shippingCostTemp = 0;
-
-            // this loop will care of all available vendor shipping charges
-            foreach ($shippingCost["vendor"] ?? [] as $s_cost) {
-                $shippingCostTemp += calculatePrice($s_cost->cost, $shippingTaxClass, "shipping");
+            if(empty($request["dhlshipingcost"])){
+                $shippingTaxClass = TaxClassOption::where("class_id", get_static_option("shipping_tax_class"))->sum("rate");
+                $shippingCost = OrderShippingChargeService::getShippingCharge($request["shipping_cost"]);
+                $shippingCostTemp = 0;
+    
+                // this loop will care of all available vendor shipping charges
+                foreach ($shippingCost["vendor"] ?? [] as $s_cost) {
+                    $shippingCostTemp += calculatePrice($s_cost->cost, $shippingTaxClass, "shipping");
+                }
+    
+                // this line of code will take care of admin shipping charge if you do not have then plus with 0
+                $shippingCostTemp += calculatePrice($shippingCost["admin"]?->cost ?? 0, $shippingTaxClass, "shipping") ?? 0;
+                // sum total shipping cost
+                $totalShippingCharge = $shippingCostTemp;
+            }else{
+                $totalShippingCharge = $request["dhlshipingcost"];
             }
-
-            // this line of code will take care of admin shipping charge if you do not have then plus with 0
-            $shippingCostTemp += calculatePrice($shippingCost["admin"]?->cost ?? 0, $shippingTaxClass, "shipping") ?? 0;
-            // sum total shipping cost
-            $totalShippingCharge = $shippingCostTemp;
+            
         } else {
             $totalShippingCharge = 0;
         }
@@ -529,7 +536,8 @@ class DcastaliaOrderController extends Controller
         $postData['store_passwd']   = env('SSL_STORE_PASSWORD');
 
         $postData['total_amount']   = $data['amount'];
-        $postData['currency']       = 'BDT';
+        // $postData['currency']       = 'BDT';
+        $postData['currency']       = getCurrency();
         $postData['tran_id']        = "ECOM_".uniqid();
         $postData['success_url']    = route('dc.payment-success');
         $postData['fail_url']       = route('dc.payment-fail');
@@ -568,7 +576,7 @@ class DcastaliaOrderController extends Controller
        // $direct_api_url = "https://securepay.sslcommerz.com/gwprocess/v4/api.php";
        // $direct_api_url = "https://sandbox.sslcommerz.com/gwprocess/v4/api.php";
 
-
+        // dd($postData);
         $handle = curl_init();
         curl_setopt($handle, CURLOPT_URL, $direct_api_url);
         curl_setopt($handle, CURLOPT_TIMEOUT, 30);

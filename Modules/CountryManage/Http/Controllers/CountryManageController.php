@@ -38,6 +38,7 @@ class CountryManageController extends Controller
     {
         $country = Country::create([
             'name' => $request->sanitize_html('name'),
+            'code' => $request->sanitize_html('code'),
             'status' => $request->sanitize_html('status'),
         ]);
 
@@ -56,6 +57,7 @@ class CountryManageController extends Controller
     {
         $updated = Country::findOrFail($request->id)->update([
             'name' => $request->sanitize_html('name'),
+            'code' => $request->sanitize_html('code'),
             'status' => $request->sanitize_html('status'),
         ]);
 

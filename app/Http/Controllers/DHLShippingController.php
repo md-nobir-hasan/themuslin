@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 
 use Modules\Product\Entities\Product as EntitiesProduct;
 use Cart;
-
+use Modules\CountryManage\Entities\Country;
+use Modules\Product\Entities\Product;
+use Illuminate\Support\Facades\Http;
 class DHLShippingController extends Controller
 {
     protected $dhlService;
@@ -34,6 +36,116 @@ class DHLShippingController extends Controller
         return response()->json($response);
     }
 
+    public function calu(Request $request)
+    {
+        $request->validate([
+            'address' => 'required|string',
+            'city' => 'required|string',
+            'postal_code' => 'required|string',
+            'country' => 'required|exists:countries,id',
+            'state' => 'required|exists:states,id',
+        ]);
+        $cart = Cart::instance('default')->content();
+
+        $all_user_shipping = [];
+
+        $all_country = Country::where('status', 'publish')->where('id', $request->country)->get()->toArray();
+
+        $all_cart_items = Cart::content();
+
+
+        $prd_ids = $all_cart_items?->pluck('id')?->toArray();
+         $products = Product::with('category', 'subCategory', 'childCategory')->whereIn('id', $prd_ids)->get();
+
+        $packages = [];
+
+        foreach ($products as $product) {
+            $packages[] = [
+                'weight' => (float)$product->weight,
+                'dimensions' => [
+                    'length' => (float)$product->length,
+                    'width' => (float)$product->width,
+                    'height' => (float)$product->height
+                ]
+            ];
+        }
+
+        // Now send the request
+        $apiKey = config('services.dhl.key');
+        $apiPassword = config('services.dhl.password');
+        $auth = base64_encode("$apiKey:$apiPassword");
+        $url =  config('services.dhl.url');
+        $messageReference = substr(md5(uniqid()), 0, 28);
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Basic ' . $auth,
+            'Content-Type' => 'application/json',
+            'Message-Reference' => $messageReference,
+            'Message-Reference-Date' => now()->toIso8601String(),
+            'Plugin-Name' => 'TestPlugin',
+            'Plugin-Version' => '1.0.0',
+            'Shipping-System-Platform-Name' => 'TestPlatform',
+            'Shipping-System-Platform-Version' => '2.0.0',
+            'Webstore-Platform-Name' => 'LaravelStore',
+            'Webstore-Platform-Version' => '1.5.2',
+            // 'x-version' => '1.0'   // Uncomment if needed
+        ])->post($url, [
+            'customerDetails' => [
+                'shipperDetails' => [
+                    'postalCode' => '1205',
+                    'cityName' => 'Dhaka',
+                    'countryCode' => 'BD',
+                ],
+                'receiverDetails' => [
+                    'postalCode' => '10117',
+                    'cityName' => 'Berlin',
+                    'countryCode' => 'DE',
+                ],
+            ],
+            'accounts' => [
+                [
+                    'typeCode' => 'shipper',
+                    'number' => '525738901'
+                ]
+            ],
+            'plannedShippingDateAndTime' => now()->addDays(2)->format('Y-m-d\TH:i:s \G\M\T+00:00'),
+            'isCustomsDeclarable' => true,
+            'unitOfMeasurement' => 'metric',
+            'packages' => $packages // Dynamically created packages
+        ]);
+
+        try {
+               $responseArray = $response->json();
+        
+            $cost0 =     $responseArray['products'][0]['totalPrice'][0]['price'];
+            $cur0 =     $responseArray['products'][0]['totalPrice'][0]['priceCurrency'];
+            
+            $cost1 =     $responseArray['products'][1]['totalPrice'][0]['price'];
+            $cur1 =     $responseArray['products'][1]['totalPrice'][0]['priceCurrency'];
+            
+            $cost2 =     $responseArray['products'][2]['totalPrice'][0]['price'];
+            $cur2 =     $responseArray['products'][2]['totalPrice'][0]['priceCurrency'];
+            return response()->json([
+                'success' => true,
+                'cost0' => $cost0.' '.$cur0,
+                'cost1' => $cost1.' '.$cur1,
+                'cost2' => $cost2.' '.$cur2,
+                'message' => 'Shipping cost calculated successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Could not calculate shipping cost: ' . $e->getMessage()
+            ]);
+        }    
+        
+     
+
+         
+         
+    }
+    
+    
     public function calculate(Request $request)
     {
         $request->validate([

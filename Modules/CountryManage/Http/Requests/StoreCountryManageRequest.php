@@ -15,6 +15,7 @@ class StoreCountryManageRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:191',
+            'code' => 'required|string|max:191',
             'status' => 'required|string|max:191',
         ];
     }

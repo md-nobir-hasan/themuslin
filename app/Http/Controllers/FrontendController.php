@@ -77,7 +77,7 @@ use Modules\Product\Entities\ProductChildCategory;
 use Modules\Product\Entities\ProductInventory;
 use Modules\Product\Http\Services\Api\ApiProductServices;
 use Modules\Product\Entities\ProductInventoryDetail;
-
+use Illuminate\Support\Facades\Http;
 
 
 class FrontendController extends Controller
@@ -1133,7 +1133,14 @@ class FrontendController extends Controller
 
 
     public function cartCheckoutPage(Request $request): View|Factory|RedirectResponse|Application
+        
+//    public function cartCheckoutPage(Request $request)
+        
     {
+    
+
+
+        
         $cart = Cart::instance('default')->content();
 
         $default_shipping_cost = CartAction::getDefaultShippingCost();
@@ -1220,7 +1227,7 @@ class FrontendController extends Controller
         $subtotal = Cart::subtotal(2, '.', '');
         $subtotal_with_tax = $subtotal + $default_shipping_cost;
         $coupon_amount = CartService::calculateCoupon($request, $subtotal, $products, 'DISCOUNT', $default_shipping_cost);
-
+//        dd($products);
         // $tax_data = CartService::getDefaultTax($subtotal);
         // $tax = $tax_data['tax'];
         // $tax_percentage = $tax_data['tax_percentage'];

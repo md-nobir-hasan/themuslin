@@ -33,7 +33,8 @@ class SubmitCheckoutRequest extends FormRequest
             "shipping_id" => "required",
             "cart_items" => "sometimes",
             "transaction_attachment" => "sometimes|mimes:pdf,jpeg,jpg,png,gif,docx",
-            "note" => "nullable"
+            "note" => "nullable",
+            "dhlshipingcost" => "nullable"
         ];
     }
 

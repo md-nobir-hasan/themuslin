@@ -288,6 +288,12 @@
                         <span class="request__left">{{ __('Transaction ID') }}</span>
                         <span class="request__right">{{ $order->transaction_id }}</span>
                     </div>
+                    @if(!empty($order->shipmenttrackingnumber))
+                    <div class="request__item">
+                        <span class="request__left">{{ __('DHL Shiment Tracking') }}</span>
+                        <span class="request__right">{{ $order->shipmenttrackingnumber }}</span>
+                    </div>
+                    @endif
                     <div class="request__item">
                         <span class="request__left">{{ __('Payment Gateway') }}</span>
                         <span
