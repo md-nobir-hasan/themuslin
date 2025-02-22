@@ -23,6 +23,7 @@ use App\Http\Controllers\FrontendCartController;
 use App\Http\Controllers\DcastaliaOrderController;
 use App\Http\Controllers\DHLShippingController;
 use App\Http\Controllers\InternationalShippingController;
+use App\Http\Controllers\DHLExpressController;
 
 Route::get('update-notification', XgNotificationController::class)
     ->middleware(['setlang:frontend','setlang:backend'])->name('update-notification');
@@ -862,6 +863,25 @@ Route::prefix('admin-home')->middleware(['setlang:backend', 'adminglobalVariable
 
  *    ADMIN MEDIA UPLOAD BUTTON, KEEP IT SEPARATED FOR DEMO PURPOSE
  * -----------------------------------------------------------------------*/
+Route::group(['middleware' => ['setlang:backend', 'auth:admin'], 'prefix' => 'admin-home', 'namespace' => 'Admin'], function () {
+    /* media upload */
+    Route::post('/', 'MediaUploadController@upload_media_file')->name('admin.upload.media.file');
+    Route::post('/all', 'MediaUploadController@all_upload_media_file')->name('admin.upload.media.file.all');
+    Route::post('/media-upload/loadmore', 'MediaUploadController@get_image_for_loadmore')->name('admin.upload.media.file.loadmore');
+    // chart data
+    Route::post('/chart', 'AdminDashboardController@get_chart_data')->name('admin.home.chart.data')->permission("chart");
+    Route::post('/chart/day', 'AdminDashboardController@get_chart_by_date_data')->name('admin.home.chart.data.by.day')->permission("chart-day");
+    Route::post('/chart/sale-count', 'AdminDashboardController@getSaleCountPerDayChartData')->name('admin.home.chart.sale.count.per.day')->permission("chart-sale-count");
+    Route::post('/chart/order-count', 'AdminDashboardController@getOrderCountPerDayChartData')->name('admin.home.chart.order.count.per.day')->permission("chart-order-count");
+
+    /*--------------------------
+        PAGE BUILDER
+    --------------------------*/
+
+    Route::post('page-builder/update-order', 'PageBuilderController@update_addon_order')->name('admin.page.builder.update.addon.order')->permission('page-builder-update-order');
+    Route::post('page-builder/get-admin-markup', 'PageBuilderController@get_admin_panel_addon_markup')->name('admin.page.builder.get.addon.markup')->permission('page-builder-get-admin-markup');
+});
+
 Route::group(['middleware' => ['setlang:backend', 'auth:admin'], 'prefix' => 'admin'], function () {
     Route::post('/international-shipping/update', [InternationalShippingController::class, 'updateSettings'])
         ->name('admin.international-shipping.update');
@@ -924,8 +944,10 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_
 Route::post('/set-currency', 'FrontendController@setCurrency')->name('set.currency');
 
 Route::post('/dhl/calculate', [DHLShippingController::class, 'calculate'])->name('dhl.calculate');
-Route::post('/dhl/calu', [DHLShippingController::class, 'calu'])->name('dhl.calu');
 
 Route::get('/get-cities', [DHLShippingController::class, 'getCities'])->name('get.cities');
+
+Route::get('/dhl/test-connection', [DHLExpressController::class, 'testConnection']);
+Route::post('/dhl/calu', [DHLShippingController::class, 'calu'])->name('dhl.calu');
 
 

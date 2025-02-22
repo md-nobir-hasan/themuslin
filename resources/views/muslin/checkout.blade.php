@@ -441,18 +441,22 @@
                                                     <div class="form-check">
                                                         <input type="checkbox" id="dhlCheckbox" name="dhlCheckbox" class="form-check-input">
                                                         <label for="dhlCheckbox" class="form-check-label">DHL Express Shipping</label>
-                                                    </div><br>
-                                                    <div class="form-check">
-                                                        <input type="radio" id="dhlCheckbox0" name="dhlCheckbox" class="form-check-input dhlCheckbox" data-id="0">
-                                                        <label for="dhlCheckbox0" class="form-check-label">DHL EXPRESS 9:00 Shipping</label> - <span id="dhlShippingCost0"></span>
-                                                    </div><br>
-                                                    <div class="form-check">
-                                                        <input type="radio" id="dhlCheckbox1" name="dhlCheckbox" class="form-check-input dhlCheckbox"  data-id="1">
-                                                        <label for="dhlCheckbox1" class="form-check-label">DHL EXPRESS 12:00 Shipping</label> - <span id="dhlShippingCost1"></span>
-                                                    </div> <br>
-                                                    <div class="form-check">
-                                                        <input type="radio" id="dhlCheckbox2" name="dhlCheckbox" class="form-check-input dhlCheckbox"  data-id="2">
-                                                        <label for="dhlCheckbox2" class="form-check-label">DHL EXPRESS WORLDWIDE Shipping</label> - <span id="dhlShippingCost2"></span>
+                                                         <input type="hidden" id="dhlshipingcost" name="dhlshipingcost">
+                                                    </div>
+                                                    <div id="dhlCalculation" style="display: none;" class="mt-2">
+                                                        <br>
+                                                        <div class="form-check">
+                                                            <input type="radio" id="dhlCheckbox0" name="dhlCheckbox" class="form-check-input dhlCheckbox" data-id="0">
+                                                            <label for="dhlCheckbox0" class="form-check-label">DHL EXPRESS 9:00 Shipping</label> - <span id="dhlShippingCost0"></span>
+                                                        </div><br>
+                                                        <div class="form-check">
+                                                            <input type="radio" id="dhlCheckbox1" name="dhlCheckbox" class="form-check-input dhlCheckbox"  data-id="1">
+                                                            <label for="dhlCheckbox1" class="form-check-label">DHL EXPRESS 12:00 Shipping</label> - <span id="dhlShippingCost1"></span>
+                                                        </div> <br>
+                                                        <div class="form-check">
+                                                            <input type="radio" id="dhlCheckbox2" name="dhlCheckbox" class="form-check-input dhlCheckbox"  data-id="2">
+                                                            <label for="dhlCheckbox2" class="form-check-label">DHL EXPRESS WORLDWIDE Shipping</label> - <span id="dhlShippingCost2"></span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </h6>
@@ -603,6 +607,7 @@
             let discountFee = Number($("#discount_fee").text().replace(/[^\d.-]/g, ''));
             let grandTotal = subTotal + shippingFee - discountFee;
             $("#grand_total").text("{{ $currencySymbol }} " + formatNumber(grandTotal, 2, '.', ','));
+             $("#dhlshipingcost").val(shippingFee);
         }
 
 
@@ -691,6 +696,7 @@
         $(document).ready(function() {
             // DHL Shipping Calculation
             $('#dhlCheckbox').on('change', function() {
+                $('#dhlCalculation').toggle($(this).is(':checked'));
                 if ($(this).is(':checked')) {
                     calculateDHLShipping();
                 } else {
