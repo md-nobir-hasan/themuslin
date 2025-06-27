@@ -1,0 +1,13 @@
+{
+    "name": "BlogSimple",
+    "alias": "blogsimple",
+    "description": "Simple blog module",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\BlogSimple\\Providers\\BlogSimpleServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

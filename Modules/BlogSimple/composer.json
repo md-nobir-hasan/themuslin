@@ -1,0 +1,14 @@
+{
+    "name": "nwidart/blogsimple",
+    "description": "Simple Blog Module",
+    "autoload": {
+        "psr-4": {
+            "Modules\\BlogSimple\\": ""
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": []
+        }
+    }
+}
